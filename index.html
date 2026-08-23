@@ -3,7 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">PCチェック総合サイト (Web簡易版)</title>
+<title id="page-title">TellMeMyPC for WEB｜PCチェック総合サイト - キーボード/マウス/モニター動作確認 (Keyboard & Mouse Check Tool)</title>
+<meta name="description" content="TellMeMyPC for WEBは、中古PC・ジャンクPCの動作確認をブラウザだけで行える無料ツールです。キーボードチェック、マウスチェック、モニターチェック、ネットワーク応答速度、ゲームコントローラーの動作確認に対応。インストール不要・日本語/English対応。Free browser-based PC check tool: keyboard test, mouse test, monitor test, network check, and gamepad test — no installation required.">
+<meta name="keywords" content="PCチェック,キーボードチェック,キーボード確認,マウスチェック,モニターチェック,中古PC,ジャンクPC,動作確認,keyboard check,keyboard test,mouse test,monitor test,PC check tool">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://tellme-sys.github.io/pc-check/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%230066cc'/%3E%3Ctext x='50' y='62' font-size='42' font-family='Arial,Helvetica,sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EPC%3C/text%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TellMeMyPC for WEB">
+<meta property="og:title" content="TellMeMyPC for WEB｜PCチェック総合サイト - キーボード/マウス/モニター動作確認">
+<meta property="og:description" content="中古PC・ジャンクPCの動作確認をブラウザだけで行える無料ツール。キーボード・マウス・モニター・ネットワーク・ゲームパッドのチェックに対応。日本語/English対応。">
+<meta property="og:url" content="https://tellme-sys.github.io/pc-check/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TellMeMyPC for WEB｜PCチェック総合サイト">
+<meta name="twitter:description" content="中古PC・ジャンクPCの動作確認をブラウザだけで行える無料ツール。キーボード・マウス・モニター・ネットワーク・ゲームパッドに対応。">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "TellMeMyPC for WEB",
+  "url": "https://tellme-sys.github.io/pc-check/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (Web Browser)",
+  "description": "Free browser-based PC and peripheral check tool: keyboard check, mouse check, monitor check, network response check, and gamepad check. No installation required. 中古PC・ジャンクPCの動作確認ツール。キーボードチェック・マウスチェック対応。",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "inLanguage": ["ja", "en"]
+}
+</script>
 <style>
   :root {
     --bg-color: #f4f6f8;
@@ -189,8 +217,11 @@
   </div>
 
   <header>
+    <div style="font-size: 1.1rem; font-weight: bold; color: var(--accent); letter-spacing: 0.5px;">TellMeMyPC for WEB</div>
+    <div style="font-size: 0.8rem; color: #999; margin-top: 2px;" data-i18n="brandTagline"></div>
     <h1 data-i18n="headerTitle">PC・周辺機器 簡易動作チェック (Web版)</h1>
     <p style="font-size: 0.85rem; color: #666;" data-i18n="headerSubtitle">ソフトのインストール不要で各種ハードウェアをブラウザ上で点検します</p>
+    <p style="font-size: 0.7rem; color: #aaa; margin-top: 4px;">v1.0β</p>
   </header>
 
   <div class="ad-slot" id="AD_SLOT_TOP"></div>
@@ -340,6 +371,17 @@
     </table>
   </section>
 
+  <!-- 免責事項 -->
+  <section class="card">
+    <h2 data-i18n="disclaimerTitle">免責事項</h2>
+    <div style="font-size: 0.85rem; line-height: 1.8;" data-i18n-html="disclaimerBody">
+      ・本ツールはブラウザ上で取得できる情報に基づく簡易動作確認であり、ハードウェアの故障を完全に診断するものではありません。<br>
+      ・ブラウザの仕様上、物理的に反応しないキー・ボタンは自動検出できません。最終的な動作確認はご自身の目視・実際の使用で行ってください。<br>
+      ・中古・ジャンク品の購入判断は、本ツールの結果のみに依存せず、ご自身の責任で判断してください。<br>
+      ・本ツールの利用により生じたいかなる損害についても、運営者は一切の責任を負いません。
+    </div>
+  </section>
+
   <div class="ad-slot" id="AD_SLOT_BOTTOM"></div>
 </div>
 
@@ -348,7 +390,8 @@
 let UI_LANG = 'ja';
 const I18N = {
   ja: {
-    pageTitle: 'PCチェック総合サイト (Web簡易版)',
+    pageTitle: 'TellMeMyPC for WEB｜PCチェック総合サイト - キーボード/マウス/モニター動作確認',
+    brandTagline: '～PCチェッカー～',
     headerTitle: 'PC・周辺機器 簡易動作チェック (Web版)',
     headerSubtitle: 'ソフトのインストール不要で各種ハードウェアをブラウザ上で点検します',
     section1Title: '1. PC・画面基本情報',
@@ -421,13 +464,17 @@ const I18N = {
     sumKeyboardLabel: 'キーボード', sumMouseLabel: 'マウス', sumMonitorLabel: 'モニター',
     sumNetworkLabel: 'ネットワーク', sumGamepadLabel: 'ゲームコントローラー',
     badgePending: '未確認',
-    badgeOk: '問題なし', badgeOkAllKeys: '問題なし（全キー確認済み）', badgeOkChecked: '確認済み',
+    badgeOk: 'チェック済み', badgeOkAllKeys: 'チェック済み（全キー確認済み）', badgeOkChecked: '確認済み',
     badgeWarnChatterPartial: '一部チャタリング検知', badgeWarnMissing: '確認漏れあり ({count}/{total})',
     badgeWarnConnectedNoInput: '接続済み・未入力',
-    badgeErrorChatter: 'チャタリングの可能性(要再確認)'
+    badgeErrorChatter: 'チャタリングの可能性(要再確認)',
+
+    disclaimerTitle: '免責事項',
+    disclaimerBody: '・本ツールはブラウザ上で取得できる情報に基づく簡易動作確認であり、ハードウェアの故障を完全に診断するものではありません。<br>・ブラウザの仕様上、物理的に反応しないキー・ボタンは自動検出できません。最終的な動作確認はご自身の目視・実際の使用で行ってください。<br>・中古・ジャンク品の購入判断は、本ツールの結果のみに依存せず、ご自身の責任で判断してください。<br>・本ツールの利用により生じたいかなる損害についても、運営者は一切の責任を負いません。'
   },
   en: {
-    pageTitle: 'PC Hardware Check Tool (Web)',
+    pageTitle: 'TellMeMyPC for WEB | PC & Peripheral Check Tool - Keyboard, Mouse, Monitor Test',
+    brandTagline: '',
     headerTitle: 'PC & Peripheral Quick Check (Web)',
     headerSubtitle: 'Check your hardware right in the browser — no software install needed',
     section1Title: '1. PC & Display Info',
@@ -500,10 +547,13 @@ const I18N = {
     sumKeyboardLabel: 'Keyboard', sumMouseLabel: 'Mouse', sumMonitorLabel: 'Monitor',
     sumNetworkLabel: 'Network', sumGamepadLabel: 'Game Controller',
     badgePending: 'Not checked',
-    badgeOk: 'OK', badgeOkAllKeys: 'OK (all keys confirmed)', badgeOkChecked: 'Checked',
+    badgeOk: 'Checked', badgeOkAllKeys: 'Checked (all keys confirmed)', badgeOkChecked: 'Checked',
     badgeWarnChatterPartial: 'Some chattering detected', badgeWarnMissing: 'Incomplete ({count}/{total})',
     badgeWarnConnectedNoInput: 'Connected, no input yet',
-    badgeErrorChatter: 'Possible chattering (recheck)'
+    badgeErrorChatter: 'Possible chattering (recheck)',
+
+    disclaimerTitle: 'Disclaimer',
+    disclaimerBody: '&bull; This tool provides a simple check based only on information available to the browser, and does not fully diagnose hardware failures.<br>&bull; Due to browser limitations, keys/buttons that are physically unresponsive cannot be auto-detected. Please make your final judgment based on your own observation and actual use.<br>&bull; For used or junk hardware purchase decisions, please use your own judgment rather than relying solely on this tool\'s results.<br>&bull; The operator assumes no responsibility for any damages arising from the use of this tool.'
   }
 };
 function t(key, vars) {
@@ -517,7 +567,11 @@ function t(key, vars) {
 function applyStaticI18n() {
   document.title = t('pageTitle');
   document.documentElement.lang = UI_LANG;
-  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const text = t(el.getAttribute('data-i18n'));
+    el.textContent = text;
+    el.style.display = text === '' ? 'none' : '';
+  });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
 }
 function setUiLang(lang) {
