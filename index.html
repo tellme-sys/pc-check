@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">PCチェック総合サイト (Web簡易版)</title>
+<style>
+  :root {
+    --bg-color: #f4f6f8;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --status-white: #ffffff;
+    --status-green: #2ecc71;
+    --status-yellow: #f1c40f;
+    --status-red: #e74c3c;
+    --border-color: #ccc;
+    --accent: #0066cc;
+  }
+  body {
+    margin: 0; padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex; justify-content: center;
+  }
+  .container { width: 100%; max-width: 850px; padding: 16px; box-sizing: border-box; }
+  header { text-align: center; margin-bottom: 20px; }
+  header h1 { font-size: 1.5rem; margin: 0 0 8px 0; }
+
+  /* 言語切替 */
+  .lang-switch { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  .lang-btn {
+    padding: 6px 14px; font-size: 0.85rem; font-weight: bold; border: 1px solid #ccc; border-radius: 4px;
+    cursor: pointer; background-color: #fff; color: #333;
+  }
+  .lang-btn.active-lang { background-color: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* 広告枠：申請中は横ラインのみ（テキストなし） */
+  .ad-slot { border-top: 1px solid #ddd; margin: 20px 0; height: 1px; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid #e0e0e0; border-radius: 8px;
+    padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .card h2 { font-size: 1.15rem; margin-top: 0; border-bottom: 2px solid #333; padding-bottom: 6px; }
+  .info-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .info-table th, .info-table td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
+  .info-table th { background-color: #f0f0f0; width: 40%; }
+  .controls { margin-bottom: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn {
+    padding: 8px 16px; font-size: 0.9rem; font-weight: bold; border: none; border-radius: 4px;
+    cursor: pointer; background-color: var(--accent); color: #fff;
+  }
+  .btn:disabled { background-color: #ccc; cursor: not-allowed; }
+  .btn-stop { background-color: #dc3545; }
+  .btn-reset { background-color: #6c757d; }
+  .notice { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px; font-size: 0.85rem; margin-top: 10px; }
+
+  /* キーボード */
+  .keyboard-container { background-color: #d9d9d9; padding: 10px; border-radius: 6px; overflow-x: auto; }
+  .keyboard-grid { display: grid; grid-template-columns: repeat(30, 1fr); gap: 3px; min-width: 700px; }
+  .key {
+    background-color: var(--status-white); color: #000; border-radius: 3px; padding: 6px 2px;
+    font-size: 0.7rem; text-align: center; user-select: none; grid-column: span 2;
+    box-sizing: border-box; border: 1px solid #aaa; white-space: nowrap; overflow: visible;
+  }
+  .key.row1 { margin-bottom: 10px; }
+  .key.group-gap { margin-right: 12px; }
+  .key.w-3 { grid-column: span 3; } .key.w-4 { grid-column: span 4; }
+  .key.w-5 { grid-column: span 5; } .key.w-6 { grid-column: span 6; } .key.w-8 { grid-column: span 8; }
+  .key.w-12 { grid-column: span 12; }
+  .key.status-ok { background-color: var(--status-green); color: #fff; }
+  .key.status-warn { background-color: var(--status-yellow); color: #000; }
+  .key.status-error { background-color: var(--status-red); color: #fff; }
+  .key.active { border: 2px solid #000; outline: 2px solid #fff; }
+  .key.blank { background: transparent; border: none; }
+
+  .btn-layout { background-color: #6c757d; }
+  .btn-layout.active-layout { background-color: var(--accent); }
+
+  .chrome-feature-badge {
+    background-color: #e8f0fe; border: 1px solid #a8c7fa; color: #1a56b0;
+    font-size: 0.8rem; padding: 8px 10px; border-radius: 4px; margin-bottom: 10px;
+  }
+
+  .keyboard-extra-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+  .keyboard-extra-block { background: #f7f7f7; border: 1px solid #ddd; border-radius: 6px; padding: 8px; }
+  .keyboard-extra-title { font-size: 0.8rem; font-weight: bold; color: #555; margin-bottom: 6px; }
+  .kb-dark-block { background: #d9d9d9; border-color: #bbb; }
+  .kb-dark-block .keyboard-extra-title { color: #555; }
+  .key-info-panel { flex: 1; min-width: 180px; font-size: 0.85rem; }
+  .key-info-panel span { font-weight: bold; color: var(--accent); }
+
+  .nav-keys-grid, .numpad-keys-grid {
+    display: grid; grid-template-columns: repeat(4, 34px); gap: 3px; align-content: start;
+  }
+  .nav-keys-grid { grid-template-columns: repeat(3, 34px); }
+  .nav-keys-grid .key, .numpad-keys-grid .key { grid-column: span 1; font-size: 0.65rem; padding: 8px 2px; }
+  .numpad-keys-grid .key.w-2 { grid-column: span 2; }
+
+  /* マウス */
+  .mouse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+      "dbl    wheelup    ."
+      "left   middle     right"
+      ".      wheeldown  .";
+    gap: 8px; margin-bottom: 10px;
+  }
+  .mouse-side-row { display: flex; gap: 8px; margin-top: 10px; }
+  .mouse-side-row .mouse-btn { flex: 1; }
+  #mouse-wheelup { grid-area: wheelup; }
+  #mouse-left { grid-area: left; }
+  #mouse-middle { grid-area: middle; }
+  #mouse-right { grid-area: right; }
+  #mouse-dblclick { grid-area: dbl; }
+  #mouse-wheeldown { grid-area: wheeldown; }
+  .mouse-btn {
+    background: var(--status-white); border: 1px solid #aaa; border-radius: 6px;
+    padding: 14px 4px; text-align: center; font-size: 0.85rem; transition: background-color 0.15s;
+  }
+  .mouse-btn.status-ok { background-color: var(--status-green); color: #fff; }
+  .mouse-btn.status-warn { background-color: var(--status-yellow); }
+  .mouse-btn.status-error { background-color: var(--status-red); color: #fff; }
+  .mouse-move-area {
+    height: 100px; border: 1px dashed #999; border-radius: 6px; margin-top: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #888;
+    background: #fafafa;
+  }
+  .mouse-move-area.status-ok { background-color: var(--status-green); color: #fff; }
+
+  /* モニター */
+  .monitor-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px 8px; }
+  .swatch { cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .swatch-color { width: 100%; height: 50px; border-radius: 4px; border: 1px solid #999; box-sizing: border-box; }
+  .swatch-label { font-size: 0.75rem; color: #333; text-align: center; }
+  #monitor-fullscreen {
+    position: fixed; inset: 0; z-index: 9999; display: none;
+    align-items: center; justify-content: center; cursor: pointer;
+  }
+  #monitor-fullscreen span { position: absolute; top: 10px; left: 10px; color: #888; font-size: 0.8rem; }
+
+  /* ゲームコントローラー */
+  .gamepad-status { font-size: 0.9rem; }
+  .gp-btn {
+    background: #eee; border: 1px solid #aaa; border-radius: 4px; padding: 8px 2px;
+    text-align: center; font-size: 0.65rem; transition: background-color 0.1s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gp-btn.pressed { background-color: var(--status-green); color: #fff; }
+
+  .gp-shoulder-row, .gp-trigger-row { display: flex; justify-content: space-between; gap: 8px; margin: 10px 0 0; }
+  .gp-shoulder-row .gp-btn, .gp-trigger-row .gp-btn { flex: 1; }
+
+  .gp-main-cluster { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0; }
+  .gp-dpad { display: grid; grid-template-columns: repeat(3, 32px); grid-template-rows: repeat(3, 32px); gap: 3px; }
+  .gp-dpad .gp-btn { padding: 0; }
+  .gp-center-buttons { display: flex; flex-direction: column; gap: 8px; }
+  .gp-center-buttons .gp-btn { padding: 8px 14px; }
+  .gp-face-buttons { display: grid; grid-template-columns: repeat(2, 44px); grid-template-rows: repeat(2, 32px); gap: 4px; }
+
+  .gp-bottom-row { display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 12px; }
+  .gp-bottom-row .gp-btn { padding: 8px 12px; }
+
+  .gamepad-axes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .gp-axis-label { font-size: 0.75rem; color: #666; margin-bottom: 2px; }
+  .gp-axis-bar-bg { background: #eee; border-radius: 3px; height: 10px; position: relative; overflow: hidden; }
+  .gp-axis-bar-fill { background: var(--accent); height: 100%; position: absolute; top: 0; }
+
+  /* 総合結果 */
+  .status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+  .status-badge.pending { background: #eee; color: #666; }
+  .status-badge.ok { background: var(--status-green); color: #fff; }
+  .status-badge.warn { background: var(--status-yellow); color: #000; }
+  .status-badge.error { background: var(--status-red); color: #fff; }
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .summary-table td { padding: 6px 4px; border-bottom: 1px solid #eee; }
+  .summary-table td:first-child { width: 40%; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="lang-switch">
+    <span style="font-size:0.85rem; color:#666; align-self:center;" id="lang-switch-label">選択言語 / Language：</span>
+    <button id="lang-ja-btn" class="lang-btn active-lang" onclick="setUiLang('ja')">日本語 / Japanese</button>
+    <button id="lang-en-btn" class="lang-btn" onclick="setUiLang('en')">English / 英語</button>
+  </div>
+
+  <header>
+    <h1 data-i18n="headerTitle">PC・周辺機器 簡易動作チェック (Web版)</h1>
+    <p style="font-size: 0.85rem; color: #666;" data-i18n="headerSubtitle">ソフトのインストール不要で各種ハードウェアをブラウザ上で点検します</p>
+  </header>
+
+  <div class="ad-slot" id="AD_SLOT_TOP"></div>
+
+  <!-- 1. PC基本情報 -->
+  <section class="card">
+    <h2 data-i18n="section1Title">1. PC・画面基本情報</h2>
+    <div class="notice" style="margin-bottom:12px;" data-i18n-html="browserRecommend">
+      <strong>推奨環境：Google Chrome 最新版</strong>（Chromium系ブラウザ推奨）。他ブラウザでも基本チェックは利用できますが、一部の高度な機能（キーボードロック等）が制限される場合があります。
+    </div>
+    <table class="info-table">
+      <tr><th data-i18n="labelScreenRes">画面の解像度</th><td id="info-screen-res">-</td></tr>
+      <tr><th data-i18n="labelViewport">ブラウザ表示領域</th><td id="info-viewport">-</td></tr>
+      <tr><th data-i18n="labelDpr">画面の拡大率 (DPI比率)</th><td id="info-dpr">-</td></tr>
+      <tr><th data-i18n="labelCpu">論理プロセッサ数 (CPUコア数の目安)</th><td id="info-cpu">-</td></tr>
+      <tr><th data-i18n="labelMem">概算メモリ容量</th><td id="info-mem">-</td></tr>
+      <tr><th data-i18n="labelGpu">推定グラフィックス (GPU) 情報</th><td id="info-gpu">-</td></tr>
+      <tr><th data-i18n="labelPlatform">プラットフォーム (OS判定)</th><td id="info-platform">-</td></tr>
+      <tr><th data-i18n="labelUa">ブラウザ環境 (User Agent)</th><td id="info-ua" style="font-size: 0.75rem; word-break: break-all;">-</td></tr>
+    </table>
+    <div class="notice" data-i18n="pcInfoNotice">
+      CPU/メモリ/GPU情報はブラウザが公開する範囲の概算値です。ブラウザや設定によって取得できない・不正確な場合があります。正確な仕様確認にはタスクマネージャー等をご利用ください。
+    </div>
+  </section>
+
+  <div class="ad-slot" id="AD_SLOT_RESULT_1"></div>
+
+  <!-- 2. キーボードチェック -->
+  <section class="card">
+    <h2 data-i18n="section2Title">2. キーボードチェック</h2>
+    <div class="controls">
+      <button id="layout-jis-btn" class="btn btn-layout active-layout" onclick="setLayout('jis')" data-i18n="layoutJisBtn">日本語キーボード（JIS 109キー）</button>
+      <button id="layout-us-btn" class="btn btn-layout" onclick="setLayout('us')" data-i18n="layoutUsBtn">英語キーボード（US 104キー）</button>
+    </div>
+    <div class="controls">
+      <span style="font-size:0.85rem; color:#666;" data-i18n="kbTypeLabel">キーボードの種類：</span>
+      <button id="kbtype-60-btn" class="btn btn-layout" onclick="setKeyboardType('60')" data-i18n="kbType60">60%</button>
+      <button id="kbtype-tkl-btn" class="btn btn-layout" onclick="setKeyboardType('tkl')" data-i18n="kbTypeTkl">テンキーレス</button>
+      <button id="kbtype-full-btn" class="btn btn-layout active-layout" onclick="setKeyboardType('full')" data-i18n="kbTypeFull">フルキーボード</button>
+    </div>
+    <div class="controls">
+      <button id="kb-start-btn" class="btn" onclick="startKeyboardTest()" data-i18n="btnStart">チェック開始</button>
+      <button id="kb-stop-btn" class="btn btn-stop" onclick="stopKeyboardTest()" disabled data-i18n="btnStop">チェック終了</button>
+      <button class="btn btn-reset" onclick="resetKeyboardTest()" data-i18n="btnReset">リセット</button>
+      <span id="kb-status-text" style="font-size:0.9rem;">-</span>
+    </div>
+    <div class="chrome-feature-badge" data-i18n="chromeBadge">
+      ⚡ Chromeでは、チェック中に限りF5更新・F11全画面切替などのブラウザショートカットキーの動作を一時的に無効化します（チェック終了で自動的に元に戻ります）
+    </div>
+    <div class="keyboard-container">
+      <div class="keyboard-grid" id="keyboard-layout"></div>
+    </div>
+    <div class="keyboard-extra-row">
+      <div class="keyboard-extra-block kb-dark-block" id="nav-block">
+        <div class="keyboard-extra-title" data-i18n="navTitle">ナビゲーション</div>
+        <div class="nav-keys-grid" id="nav-keys-layout"></div>
+      </div>
+      <div class="keyboard-extra-block kb-dark-block" id="numpad-block">
+        <div class="keyboard-extra-title" data-i18n="numpadTitle">テンキー</div>
+        <div class="numpad-keys-grid" id="numpad-keys-layout"></div>
+      </div>
+      <div class="keyboard-extra-block key-info-panel">
+        <div class="keyboard-extra-title" data-i18n="inputStatusTitle">入力状況</div>
+        <div><span data-i18n="currentPressedKeys">現在押しているキー：</span><br><span id="live-pressed-keys">-</span></div>
+        <div style="margin-top:8px;"><span data-i18n="intervalSincePrev">直前のキー入力からの間隔：</span><br><span id="live-interval">-</span></div>
+      </div>
+    </div>
+    <div class="notice" data-i18n-html="kbNotice">
+      <strong>注意事項:</strong><br>
+      ・物理的に反応しないキーはブラウザに信号が届かないため自動検出できません。押した後に<strong>白いまま残っているキー</strong>が無反応キーとなります。<br>
+      ・PrintScreen, Sleep, Fnキー等はOS側の設定によりWeb上で正しく検知できない場合があります。
+    </div>
+  </section>
+
+  <!-- 3. マウスチェック -->
+  <section class="card">
+    <h2 data-i18n="section3Title">3. マウスチェック</h2>
+    <div class="controls">
+      <button class="btn btn-reset" onclick="resetMouseTest()" data-i18n="btnReset">リセット</button>
+      <span id="mouse-status-text" style="font-size:0.9rem;">-</span>
+    </div>
+    <div class="mouse-grid" id="mouse-btn-area"></div>
+    <div class="mouse-move-area" id="mouse-move-area">-</div>
+    <div class="mouse-side-row" id="mouse-side-area"></div>
+    <div class="notice" data-i18n-html="mouseNotice">
+      <strong>注意事項:</strong> 一定時間内に異常な複数クリックを検出した場合「チャタリングの可能性」を表示します。単発での判定確定は避け、複数回試してください。
+    </div>
+  </section>
+
+  <div class="ad-slot" id="AD_SLOT_RESULT_2"></div>
+
+  <!-- 4. モニターチェック -->
+  <section class="card">
+    <h2 data-i18n="section4Title">4. モニターチェック</h2>
+    <p style="font-size:0.85rem; color:#666;" data-i18n="monitorDesc">各色をクリックすると全画面表示します。ドット抜け・常時点灯・色むら・焼き付きがないか目視確認してください。「サイクル」は1秒ごとに全色を自動切替します。画面をクリックすると終了します。</p>
+    <div class="monitor-swatches" id="monitor-swatches"></div>
+  </section>
+  <div id="monitor-fullscreen" onclick="exitMonitorFullscreen()"><span data-i18n="monitorExitLabel">クリックで終了</span></div>
+
+  <!-- 5. ネットワークチェック -->
+  <section class="card">
+    <h2 data-i18n="section5Title">5. ネットワークチェック（概算）</h2>
+    <div class="controls">
+      <button id="net-start-btn" class="btn" onclick="runNetworkCheck()" data-i18n="btnStart">チェック開始</button>
+      <span id="net-status-text" style="font-size:0.9rem;">-</span>
+    </div>
+    <table class="info-table">
+      <tr><th data-i18n="netAvgLabel">応答時間 (平均)</th><td id="net-avg">-</td></tr>
+      <tr><th data-i18n="netMinMaxLabel">応答時間 (最速/最遅)</th><td id="net-minmax">-</td></tr>
+    </table>
+    <div class="notice" data-i18n="netNotice">
+      Google Public DNS（8.8.8.8）宛にHTTPS通信を複数回行い、その往復時間から通信の応答性を概算するものです。ブラウザの制約上、OSの「Ping」コマンドと同じ値にはならず、実際の値より高めに出る場合があります。回線速度（Mbps）そのものの計測ではありません。
+    </div>
+  </section>
+
+  <!-- 6. ゲームコントローラーチェック -->
+  <section class="card">
+    <h2 data-i18n="section6Title">6. ゲームコントローラーチェック</h2>
+    <div class="controls">
+      <button id="gp-start-btn" class="btn" onclick="startGamepadTest()" data-i18n="btnStart">チェック開始</button>
+      <button id="gp-stop-btn" class="btn btn-stop" onclick="stopGamepadTest()" disabled data-i18n="btnStop">チェック終了</button>
+      <span class="gamepad-status" id="gamepad-status">-</span>
+    </div>
+    <div class="gp-shoulder-row" id="gp-shoulder-row"></div>
+    <div class="gp-trigger-row" id="gp-trigger-row"></div>
+    <div class="gp-main-cluster">
+      <div class="gp-dpad" id="gp-dpad"></div>
+      <div class="gp-center-buttons" id="gp-center-buttons"></div>
+      <div class="gp-face-buttons" id="gp-face-buttons"></div>
+    </div>
+    <div class="gp-bottom-row" id="gp-bottom-row"></div>
+    <div class="gamepad-axes" id="gamepad-axes"></div>
+    <div class="notice" data-i18n="gpNotice">
+      ボタン番号・十字キー・スティックの割り当ては機種により異なる場合があります。押しても反応しない場合は、一度いずれかのボタンを押してブラウザに認識させてから再度お試しください。
+    </div>
+  </section>
+
+  <!-- 7. 総合結果 -->
+  <section class="card">
+    <h2 data-i18n="section7Title">7. 総合結果</h2>
+    <table class="summary-table">
+      <tr><td data-i18n="sumKeyboardLabel">キーボード</td><td id="sum-keyboard"><span class="status-badge pending">-</span></td></tr>
+      <tr><td data-i18n="sumMouseLabel">マウス</td><td id="sum-mouse"><span class="status-badge pending">-</span></td></tr>
+      <tr><td data-i18n="sumMonitorLabel">モニター</td><td id="sum-monitor"><span class="status-badge pending">-</span></td></tr>
+      <tr><td data-i18n="sumNetworkLabel">ネットワーク</td><td id="sum-network"><span class="status-badge pending">-</span></td></tr>
+      <tr><td data-i18n="sumGamepadLabel">ゲームコントローラー</td><td id="sum-gamepad"><span class="status-badge pending">-</span></td></tr>
+    </table>
+  </section>
+
+  <div class="ad-slot" id="AD_SLOT_BOTTOM"></div>
+</div>
+
+<script>
+/* ===== 0. 多言語対応 ===== */
+let UI_LANG = 'ja';
+const I18N = {
+  ja: {
+    pageTitle: 'PCチェック総合サイト (Web簡易版)',
+    headerTitle: 'PC・周辺機器 簡易動作チェック (Web版)',
+    headerSubtitle: 'ソフトのインストール不要で各種ハードウェアをブラウザ上で点検します',
+    section1Title: '1. PC・画面基本情報',
+    browserRecommend: '<strong>推奨環境：Google Chrome 最新版</strong>（Chromium系ブラウザ推奨）。他ブラウザでも基本チェックは利用できますが、一部の高度な機能（キーボードロック等）が制限される場合があります。',
+    labelScreenRes: '画面の解像度', labelViewport: 'ブラウザ表示領域', labelDpr: '画面の拡大率 (DPI比率)',
+    labelCpu: '論理プロセッサ数 (CPUコア数の目安)', labelMem: '概算メモリ容量', labelGpu: '推定グラフィックス (GPU) 情報',
+    labelPlatform: 'プラットフォーム (OS判定)', labelUa: 'ブラウザ環境 (User Agent)',
+    pcInfoNotice: 'CPU/メモリ/GPU情報はブラウザが公開する範囲の概算値です。ブラウザや設定によって取得できない・不正確な場合があります。正確な仕様確認にはタスクマネージャー等をご利用ください。',
+    notAvailableBrowser: '取得できません（このブラウザでは非対応）',
+    notAvailableWebgl: '取得できません（WebGL非対応）',
+    notAvailableRestricted: '取得できません（ブラウザの制限）',
+    notAvailable: '取得できません',
+    threadsUnit: '{n} スレッド',
+    memUnit: '約 {n} GB以上',
+
+    section2Title: '2. キーボードチェック',
+    layoutJisBtn: '日本語キーボード（JIS 109キー）',
+    layoutUsBtn: '英語キーボード（US 104キー）',
+    kbTypeLabel: 'キーボードの種類：', kbType60: '60%', kbTypeTkl: 'テンキーレス', kbTypeFull: 'フルキーボード',
+    btnStart: 'チェック開始', btnStop: 'チェック終了', btnReset: 'リセット',
+    kbStatusDefault: '状態: 未確認',
+    kbStatusChecking: '状態: チェック中...',
+    kbStatusStopped: '状態: チェック完了（手動停止）',
+    chromeBadge: '⚡ Chromeでは、チェック中に限りF5更新・F11全画面切替などのブラウザショートカットキーの動作を一時的に無効化します（チェック終了で自動的に元に戻ります）',
+    navTitle: 'ナビゲーション', numpadTitle: 'テンキー', inputStatusTitle: '入力状況',
+    currentPressedKeys: '現在押しているキー：', intervalSincePrev: '直前のキー入力からの間隔：',
+    kbNotice: '<strong>注意事項:</strong><br>・物理的に反応しないキーはブラウザに信号が届かないため自動検出できません。押した後に<strong>白いまま残っているキー</strong>が無反応キーとなります。<br>・PrintScreen, Sleep, Fnキー等はOS側の設定によりWeb上で正しく検知できない場合があります。',
+
+    section3Title: '3. マウスチェック',
+    mouseStatusDefault: '状態: 未確認',
+    mouseStatusChattering: '状態: チャタリングの可能性あり（複数回試してください）',
+    mouseStatusChecking: '状態: 確認中',
+    mouseMoveDefault: 'この枠内でマウスを動かしてください',
+    mouseMoveDetected: 'マウス移動を検知しました',
+    mouseNotice: '<strong>注意事項:</strong> 一定時間内に異常な複数クリックを検出した場合「チャタリングの可能性」を表示します。単発での判定確定は避け、複数回試してください。',
+    mouseLabels: { wheelup:'ホイール↑', left:'左クリック', middle:'中央クリック（ホイール押込）', right:'右クリック', dblclick:'ダブルクリック', wheeldown:'ホイール↓', back:'戻るボタン', forward:'進むボタン' },
+
+    section4Title: '4. モニターチェック',
+    monitorDesc: '各色をクリックすると全画面表示します。ドット抜け・常時点灯・色むら・焼き付きがないか目視確認してください。「サイクル」は1秒ごとに全色を自動切替します。画面をクリックすると終了します。',
+    monitorExitLabel: 'クリックで終了',
+    monitorLabels: ['白','黒','赤','緑','青','グレー','グラデーション','格子','縞模様'],
+    monitorCycleLabel: 'サイクル',
+
+    section5Title: '5. ネットワークチェック（概算）',
+    netStatusDefault: '状態: 未確認',
+    netStatusChecking: '状態: チェック中...',
+    netStatusFailed: '状態: 測定できませんでした（通信環境またはブラウザの制限により失敗）',
+    netStatusDone: '状態: チェック完了',
+    netAvgLabel: '応答時間 (平均)', netMinMaxLabel: '応答時間 (最速/最遅)',
+    netAvgResult: '約 {avg} ms （{count}/{attempts}回成功）',
+    netMinMaxResult: '{min} ms 〜 {max} ms',
+    netNotice: 'Google Public DNS（8.8.8.8）宛にHTTPS通信を複数回行い、その往復時間から通信の応答性を概算するものです。ブラウザの制約上、OSの「Ping」コマンドと同じ値にはならず、実際の値より高めに出る場合があります。回線速度（Mbps）そのものの計測ではありません。',
+
+    section6Title: '6. ゲームコントローラーチェック',
+    gpStatusIdle: '状態: 接続無し',
+    gpStatusIdleWaiting: '状態: 接続無し（コントローラーのいずれかのボタンを押してください）',
+    gpStatusConnected: '状態: 接続中 - {id}',
+    gpStatusStopped: '状態: チェック終了（手動停止）',
+    gpStatusBlocked: '状態: このページの表示環境ではゲームパッド機能がブロックされています（Permissions Policyの制限）。HTMLファイルを直接ブラウザで開いてお試しください。',
+    gpNotice: 'ボタン番号・十字キー・スティックの割り当ては機種により異なる場合があります。押しても反応しない場合は、一度いずれかのボタンを押してブラウザに認識させてから再度お試しください。',
+    gpButtonLabels: [
+      'ボタン0 (A/×)', 'ボタン1 (B/○)', 'ボタン2 (X/□)', 'ボタン3 (Y/△)',
+      'ボタン4 (LB/L1)', 'ボタン5 (RB/R1)', 'ボタン6 (LT/L2)', 'ボタン7 (RT/R2)',
+      'ボタン8 (Select)', 'ボタン9 (Start)', 'ボタン10 (L3)', 'ボタン11 (R3)',
+      '十字 上', '十字 下', '十字 左', '十字 右', 'ボタン16 (Home)'
+    ],
+    gpAxisLabels: ['左スティック X', '左スティック Y', '右スティック X', '右スティック Y'],
+
+    section7Title: '7. 総合結果',
+    sumKeyboardLabel: 'キーボード', sumMouseLabel: 'マウス', sumMonitorLabel: 'モニター',
+    sumNetworkLabel: 'ネットワーク', sumGamepadLabel: 'ゲームコントローラー',
+    badgePending: '未確認',
+    badgeOk: '問題なし', badgeOkAllKeys: '問題なし（全キー確認済み）', badgeOkChecked: '確認済み',
+    badgeWarnChatterPartial: '一部チャタリング検知', badgeWarnMissing: '確認漏れあり ({count}/{total})',
+    badgeWarnConnectedNoInput: '接続済み・未入力',
+    badgeErrorChatter: 'チャタリングの可能性(要再確認)'
+  },
+  en: {
+    pageTitle: 'PC Hardware Check Tool (Web)',
+    headerTitle: 'PC & Peripheral Quick Check (Web)',
+    headerSubtitle: 'Check your hardware right in the browser — no software install needed',
+    section1Title: '1. PC & Display Info',
+    browserRecommend: '<strong>Recommended: latest Google Chrome</strong> (Chromium-based browsers). Other browsers can run basic checks, but some advanced features (e.g. keyboard lock) may be limited.',
+    labelScreenRes: 'Screen resolution', labelViewport: 'Browser viewport', labelDpr: 'Display scale (DPR)',
+    labelCpu: 'Logical processors (approx. CPU cores)', labelMem: 'Approx. memory', labelGpu: 'Estimated graphics (GPU) info',
+    labelPlatform: 'Platform (OS detection)', labelUa: 'Browser (User Agent)',
+    pcInfoNotice: 'CPU/memory/GPU values are rough estimates from what the browser exposes. They may be unavailable or inaccurate depending on your browser and settings. Use Task Manager for exact specs.',
+    notAvailableBrowser: 'Not available (unsupported by this browser)',
+    notAvailableWebgl: 'Not available (WebGL unsupported)',
+    notAvailableRestricted: 'Not available (browser restriction)',
+    notAvailable: 'Not available',
+    threadsUnit: '{n} threads',
+    memUnit: 'About {n} GB or more',
+
+    section2Title: '2. Keyboard Check',
+    layoutJisBtn: 'Japanese Keyboard (JIS 109-key)',
+    layoutUsBtn: 'English Keyboard (US 104-key)',
+    kbTypeLabel: 'Keyboard type:', kbType60: '60%', kbTypeTkl: 'Tenkeyless', kbTypeFull: 'Full-size',
+    btnStart: 'Start Check', btnStop: 'Stop Check', btnReset: 'Reset',
+    kbStatusDefault: 'Status: Not checked',
+    kbStatusChecking: 'Status: Checking...',
+    kbStatusStopped: 'Status: Check finished (stopped manually)',
+    chromeBadge: '⚡ In Chrome, browser shortcuts like F5 refresh and F11 fullscreen are temporarily disabled only while checking (restored automatically when you stop).',
+    navTitle: 'Navigation', numpadTitle: 'Numpad', inputStatusTitle: 'Input status',
+    currentPressedKeys: 'Currently pressed keys:', intervalSincePrev: 'Time since previous key press:',
+    kbNotice: '<strong>Note:</strong><br>&bull; Keys that are physically unresponsive can\'t be auto-detected, since no signal reaches the browser. A key left <strong>white</strong> after testing indicates no response.<br>&bull; PrintScreen, Sleep, some Fn keys, etc. may not be detectable on the web depending on OS settings.',
+
+    section3Title: '3. Mouse Check',
+    mouseStatusDefault: 'Status: Not checked',
+    mouseStatusChattering: 'Status: Possible chattering detected (please try a few more times)',
+    mouseStatusChecking: 'Status: Checking',
+    mouseMoveDefault: 'Move the mouse inside this box',
+    mouseMoveDetected: 'Mouse movement detected',
+    mouseNotice: '<strong>Note:</strong> If abnormal repeated clicks are detected within a short interval, "possible chattering" is shown. Please test a few times rather than relying on a single click.',
+    mouseLabels: { wheelup:'Wheel Up', left:'Left Click', middle:'Middle Click (Wheel Press)', right:'Right Click', dblclick:'Double Click', wheeldown:'Wheel Down', back:'Back Button', forward:'Forward Button' },
+
+    section4Title: '4. Monitor Check',
+    monitorDesc: 'Click a color to display it fullscreen. Check visually for dead pixels, stuck pixels, color unevenness, or burn-in. "Cycle" automatically switches through all colors every second. Click the screen to exit.',
+    monitorExitLabel: 'Click to exit',
+    monitorLabels: ['White','Black','Red','Green','Blue','Gray','Gradient','Checker','Stripes'],
+    monitorCycleLabel: 'Cycle',
+
+    section5Title: '5. Network Check (approx.)',
+    netStatusDefault: 'Status: Not checked',
+    netStatusChecking: 'Status: Checking...',
+    netStatusFailed: 'Status: Could not measure (network environment or browser restriction)',
+    netStatusDone: 'Status: Check complete',
+    netAvgLabel: 'Response time (average)', netMinMaxLabel: 'Response time (fastest/slowest)',
+    netAvgResult: 'About {avg} ms ({count}/{attempts} succeeded)',
+    netMinMaxResult: '{min} ms 〜 {max} ms',
+    netNotice: 'This sends several HTTPS requests to Google Public DNS (8.8.8.8) and estimates responsiveness from the round-trip time. Due to browser limitations, this will not match the OS "ping" command and may read higher than the actual value. It does not measure line speed (Mbps).',
+
+    section6Title: '6. Game Controller Check',
+    gpStatusIdle: 'Status: Not connected',
+    gpStatusIdleWaiting: 'Status: Not connected (press any button on the controller)',
+    gpStatusConnected: 'Status: Connected - {id}',
+    gpStatusStopped: 'Status: Check finished (stopped manually)',
+    gpStatusBlocked: 'Status: Gamepad access is blocked in this display environment (Permissions Policy restriction). Please try opening the HTML file directly in your browser.',
+    gpNotice: 'Button numbers, D-pad, and stick assignments may vary by device. If a button does not respond, press any button once to let the browser detect the controller, then try again.',
+    gpButtonLabels: [
+      'Button 0 (A/×)', 'Button 1 (B/○)', 'Button 2 (X/□)', 'Button 3 (Y/△)',
+      'Button 4 (LB/L1)', 'Button 5 (RB/R1)', 'Button 6 (LT/L2)', 'Button 7 (RT/R2)',
+      'Button 8 (Select)', 'Button 9 (Start)', 'Button 10 (L3)', 'Button 11 (R3)',
+      'D-Pad Up', 'D-Pad Down', 'D-Pad Left', 'D-Pad Right', 'Button 16 (Home)'
+    ],
+    gpAxisLabels: ['Left Stick X', 'Left Stick Y', 'Right Stick X', 'Right Stick Y'],
+
+    section7Title: '7. Overall Results',
+    sumKeyboardLabel: 'Keyboard', sumMouseLabel: 'Mouse', sumMonitorLabel: 'Monitor',
+    sumNetworkLabel: 'Network', sumGamepadLabel: 'Game Controller',
+    badgePending: 'Not checked',
+    badgeOk: 'OK', badgeOkAllKeys: 'OK (all keys confirmed)', badgeOkChecked: 'Checked',
+    badgeWarnChatterPartial: 'Some chattering detected', badgeWarnMissing: 'Incomplete ({count}/{total})',
+    badgeWarnConnectedNoInput: 'Connected, no input yet',
+    badgeErrorChatter: 'Possible chattering (recheck)'
+  }
+};
+function t(key, vars) {
+  let str = I18N[UI_LANG][key];
+  if (str === undefined) return key;
+  if (vars) {
+    Object.entries(vars).forEach(([k, v]) => { str = str.replace(`{${k}}`, v); });
+  }
+  return str;
+}
+function applyStaticI18n() {
+  document.title = t('pageTitle');
+  document.documentElement.lang = UI_LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
+}
+function setUiLang(lang) {
+  UI_LANG = lang;
+  document.getElementById('lang-ja-btn').classList.toggle('active-lang', lang === 'ja');
+  document.getElementById('lang-en-btn').classList.toggle('active-lang', lang === 'en');
+  applyStaticI18n();
+  // 既定ステータス文言の再適用
+  document.getElementById('kb-status-text').textContent = isTestingKeyboard ? t('kbStatusChecking') : t('kbStatusDefault');
+  document.getElementById('mouse-status-text').textContent = t('mouseStatusDefault');
+  document.getElementById('mouse-move-area').textContent = t('mouseMoveDefault');
+  document.getElementById('net-status-text').textContent = t('netStatusDefault');
+  document.getElementById('gamepad-status').textContent = gamepadConnected ? t('gpStatusConnected', {id: gamepadLastId || ''}) : t('gpStatusIdle');
+  // 動的ラベル群を再描画
+  renderMouseButtons();
+  renderMonitorSwatches();
+  renderGamepadButtons();
+  updateSummary();
+}
+
+/* ===== 1. PC基本情報 ===== */
+function getGPUInfo() {
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return t('notAvailableWebgl');
+    const dbgInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    if (!dbgInfo) return t('notAvailableRestricted');
+    return gl.getParameter(dbgInfo.UNMASKED_RENDERER_WEBGL) || t('notAvailable');
+  } catch (e) {
+    return t('notAvailable');
+  }
+}
+function initSystemInfo() {
+  document.getElementById('info-screen-res').textContent = `${window.screen.width} × ${window.screen.height} px`;
+  document.getElementById('info-viewport').textContent = `${window.innerWidth} × ${window.innerHeight} px`;
+  document.getElementById('info-dpr').textContent = `${window.devicePixelRatio}x`;
+  document.getElementById('info-cpu').textContent = navigator.hardwareConcurrency
+    ? t('threadsUnit', {n: navigator.hardwareConcurrency}) : t('notAvailableBrowser');
+  document.getElementById('info-mem').textContent = navigator.deviceMemory
+    ? t('memUnit', {n: navigator.deviceMemory}) : t('notAvailableBrowser');
+  document.getElementById('info-gpu').textContent = getGPUInfo();
+  document.getElementById('info-platform').textContent = navigator.platform || navigator.userAgent;
+  document.getElementById('info-ua').textContent = navigator.userAgent;
+}
+
+/* ===== 2. キーボード（物理刻印はUI言語と独立、JIS/US選択に連動） ===== */
+const jisKeys = [
+  ['Escape','Esc','w-2 row1 group-gap'],['F1','F1','w-2 row1'],['F2','F2','w-2 row1'],['F3','F3','w-2 row1'],['F4','F4','w-2 row1 group-gap'],
+  ['F5','F5','w-2 row1'],['F6','F6','w-2 row1'],['F7','F7','w-2 row1'],['F8','F8','w-2 row1 group-gap'],
+  ['F9','F9','w-2 row1'],['F10','F10','w-2 row1'],['F11','F11','w-2 row1'],['F12','F12','w-2 row1 group-gap'],
+  ['PrintScreen','PrtSc','w-2 row1'],['ScrollLock','ScrLk','w-2 row1'],
+  ['Backquote','半角','w-2'],['Digit1','1 ぬ','w-2'],['Digit2','2 ふ','w-2'],['Digit3','3 あ','w-2'],
+  ['Digit4','4 う','w-2'],['Digit5','5 え','w-2'],['Digit6','6 お','w-2'],['Digit7','7 や','w-2'],
+  ['Digit8','8 ゆ','w-2'],['Digit9','9 よ','w-2'],['Digit0','0 わ','w-2'],['Minus','- ほ','w-2'],
+  ['Equal','^ へ','w-2'],['IntlYen','¥ ぬ','w-2'],['Backspace','BS','w-2'],
+  ['Tab','Tab','w-3'],['KeyQ','Q た','w-2'],['KeyW','W て','w-2'],['KeyE','E い','w-2'],
+  ['KeyR','R す','w-2'],['KeyT','T か','w-2'],['KeyY','Y ん','w-2'],['KeyU','U な','w-2'],
+  ['KeyI','I に','w-2'],['KeyO','O ら','w-2'],['KeyP','P せ','w-2'],['BracketLeft','@ せ','w-2'],
+  ['BracketRight','[ ﾟ','w-2'],['Enter','Enter','w-3'],
+  ['CapsLock','英数','w-3'],['KeyA','A ち','w-2'],['KeyS','S と','w-2'],['KeyD','D し','w-2'],
+  ['KeyF','F は','w-2'],['KeyG','G き','w-2'],['KeyH','H く','w-2'],['KeyJ','J ま','w-2'],
+  ['KeyK','K の','w-2'],['KeyL','L り','w-2'],['Semicolon','; れ','w-2'],['Quote',': け','w-2'],
+  ['Backslash','] む','w-3'],
+  ['ShiftLeft','Shift','w-4'],['KeyZ','Z つ','w-2'],['KeyX','X さ','w-2'],['KeyC','C そ','w-2'],
+  ['KeyV','V ひ','w-2'],['KeyB','B こ','w-2'],['KeyN','N み','w-2'],['KeyM','M も','w-2'],
+  ['Comma',', ね','w-2'],['Period','. る','w-2'],['Slash','/ め','w-2'],['IntlRo','＼ ろ','w-2'],
+  ['ShiftRight','Shift','w-4'],
+  ['ControlLeft','Ctrl','w-3'],['MetaLeft','Win','w-2'],['AltLeft','Alt','w-2'],
+  ['NonConvert','無変換','w-3'],['Space','Space','w-8'],['Convert','変換','w-3'],
+  ['KanaMode','かな','w-3'],['AltRight','Alt','w-2'],['ControlRight','Ctrl','w-2']
+];
+const usKeys = [
+  ['Escape','Esc','w-2 row1 group-gap'],['F1','F1','w-2 row1'],['F2','F2','w-2 row1'],['F3','F3','w-2 row1'],['F4','F4','w-2 row1 group-gap'],
+  ['F5','F5','w-2 row1'],['F6','F6','w-2 row1'],['F7','F7','w-2 row1'],['F8','F8','w-2 row1 group-gap'],
+  ['F9','F9','w-2 row1'],['F10','F10','w-2 row1'],['F11','F11','w-2 row1'],['F12','F12','w-2 row1 group-gap'],
+  ['PrintScreen','PrtSc','w-2 row1'],['ScrollLock','ScrLk','w-2 row1'],
+  ['Backquote','` ~','w-2'],['Digit1','1 !','w-2'],['Digit2','2 @','w-2'],['Digit3','3 #','w-2'],
+  ['Digit4','4 $','w-2'],['Digit5','5 %','w-2'],['Digit6','6 ^','w-2'],['Digit7','7 &','w-2'],
+  ['Digit8','8 *','w-2'],['Digit9','9 (','w-2'],['Digit0','0 )','w-2'],['Minus','- _','w-2'],
+  ['Equal','= +','w-2'],['Backspace','BS','w-2'],
+  ['Tab','Tab','w-3'],['KeyQ','Q','w-2'],['KeyW','W','w-2'],['KeyE','E','w-2'],
+  ['KeyR','R','w-2'],['KeyT','T','w-2'],['KeyY','Y','w-2'],['KeyU','U','w-2'],
+  ['KeyI','I','w-2'],['KeyO','O','w-2'],['KeyP','P','w-2'],['BracketLeft','[ {','w-2'],
+  ['BracketRight',']  }','w-2'],['Backslash','\\ |','w-3'],
+  ['CapsLock','Caps Lock','w-3'],['KeyA','A','w-2'],['KeyS','S','w-2'],['KeyD','D','w-2'],
+  ['KeyF','F','w-2'],['KeyG','G','w-2'],['KeyH','H','w-2'],['KeyJ','J','w-2'],
+  ['KeyK','K','w-2'],['KeyL','L','w-2'],['Semicolon','; :','w-2'],['Quote','\' "','w-2'],
+  ['Enter','Enter','w-3'],
+  ['ShiftLeft','Shift','w-4'],['KeyZ','Z','w-2'],['KeyX','X','w-2'],['KeyC','C','w-2'],
+  ['KeyV','V','w-2'],['KeyB','B','w-2'],['KeyN','N','w-2'],['KeyM','M','w-2'],
+  ['Comma',', <','w-2'],['Period','. >','w-2'],['Slash','/ ?','w-2'],
+  ['ShiftRight','Shift','w-5'],
+  ['ControlLeft','Ctrl','w-3'],['MetaLeft','Win','w-2'],['AltLeft','Alt','w-2'],
+  ['Space','Space','w-12'],['AltRight','Alt','w-2'],['MetaRight','Win','w-2'],
+  ['ContextMenu','Menu','w-3'],['ControlRight','Ctrl','w-3']
+];
+
+const navKeys = [
+  ['Insert','Ins'], ['Home','Home'], ['PageUp','PgUp'],
+  ['Delete','Del'], ['End','End'], ['PageDown','PgDn'],
+  [null,''], [null,''], [null,''],
+  [null,''], ['ArrowUp','↑'], [null,''],
+  ['ArrowLeft','←'], ['ArrowDown','↓'], ['ArrowRight','→']
+];
+
+const numpadKeys = [
+  ['NumLock','Num','w-1'], ['NumpadDivide','/','w-1'], ['NumpadMultiply','*','w-1'], ['NumpadSubtract','-','w-1'],
+  ['Numpad7','7','w-1'], ['Numpad8','8','w-1'], ['Numpad9','9','w-1'], ['NumpadAdd','+','w-1'],
+  ['Numpad4','4','w-1'], ['Numpad5','5','w-1'], ['Numpad6','6','w-1'], ['NumpadEnter','Enter','w-1'],
+  ['Numpad1','1','w-1'], ['Numpad2','2','w-1'], ['Numpad3','3','w-1'], [null,'','w-1'],
+  ['Numpad0','0','w-2'], ['NumpadDecimal','.','w-1'], [null,'','w-1']
+];
+
+let isTestingKeyboard = false;
+let currentLayout = 'jis';
+const keyLastPressTime = {};
+const keyState = {};
+const codeLabelMap = {};
+const currentlyPressedCodes = new Set();
+let lastGlobalPressTime = null;
+
+function renderKeyboard() {
+  const layout = document.getElementById('keyboard-layout');
+  layout.innerHTML = '';
+  const keys = currentLayout === 'jis' ? jisKeys : usKeys;
+  keys.forEach(([code, label, widthClass]) => {
+    const keyDiv = document.createElement('div');
+    keyDiv.className = `key ${widthClass}`;
+    keyDiv.id = `key-${code}`;
+    keyDiv.textContent = label;
+    layout.appendChild(keyDiv);
+    codeLabelMap[code] = label;
+  });
+
+  const navLayout = document.getElementById('nav-keys-layout');
+  navLayout.innerHTML = '';
+  navKeys.forEach(([code, label]) => {
+    const keyDiv = document.createElement('div');
+    if (!code) {
+      keyDiv.className = 'key blank';
+    } else {
+      keyDiv.className = 'key';
+      keyDiv.id = `key-${code}`;
+      keyDiv.textContent = label;
+      codeLabelMap[code] = label;
+    }
+    navLayout.appendChild(keyDiv);
+  });
+
+  const numpadLayout = document.getElementById('numpad-keys-layout');
+  numpadLayout.innerHTML = '';
+  numpadKeys.forEach(([code, label, widthClass]) => {
+    const keyDiv = document.createElement('div');
+    if (!code) {
+      keyDiv.className = `key blank ${widthClass || ''}`;
+    } else {
+      keyDiv.className = `key ${widthClass || ''}`;
+      keyDiv.id = `key-${code}`;
+      keyDiv.textContent = label;
+      codeLabelMap[code] = label;
+    }
+    numpadLayout.appendChild(keyDiv);
+  });
+}
+
+function setLayout(layout) {
+  currentLayout = layout;
+  document.getElementById('layout-jis-btn').classList.toggle('active-layout', layout === 'jis');
+  document.getElementById('layout-us-btn').classList.toggle('active-layout', layout === 'us');
+  resetKeyboardTest();
+}
+
+let keyboardType = 'full';
+const FUNCTION_ROW_CODES = ['Escape','F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12','PrintScreen','ScrollLock'];
+function setKeyboardType(type) {
+  keyboardType = type;
+  document.getElementById('kbtype-60-btn').classList.toggle('active-layout', type === '60');
+  document.getElementById('kbtype-tkl-btn').classList.toggle('active-layout', type === 'tkl');
+  document.getElementById('kbtype-full-btn').classList.toggle('active-layout', type === 'full');
+  document.getElementById('nav-block').style.display = (type === '60') ? 'none' : '';
+  document.getElementById('numpad-block').style.display = (type === 'full') ? '' : 'none';
+  updateSummary();
+}
+function getExpectedKeyCodes() {
+  const mainCodes = (currentLayout === 'jis' ? jisKeys : usKeys).map(k => k[0]);
+  const navCodes = navKeys.filter(k => k[0]).map(k => k[0]);
+  const numpadCodes = numpadKeys.filter(k => k[0]).map(k => k[0]);
+  if (keyboardType === '60') return mainCodes.filter(c => !FUNCTION_ROW_CODES.includes(c));
+  if (keyboardType === 'tkl') return mainCodes.concat(navCodes);
+  return mainCodes.concat(navCodes, numpadCodes);
+}
+
+async function startKeyboardTest() {
+  isTestingKeyboard = true;
+  document.getElementById('kb-start-btn').disabled = true;
+  document.getElementById('kb-stop-btn').disabled = false;
+  document.getElementById('kb-status-text').textContent = t('kbStatusChecking');
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+  if ('keyboard' in navigator && typeof navigator.keyboard.lock === 'function') {
+    try { await navigator.keyboard.lock(); } catch (err) { console.warn("Keyboard Lock unavailable:", err); }
+  }
+}
+function stopKeyboardTest() {
+  isTestingKeyboard = false;
+  document.getElementById('kb-start-btn').disabled = false;
+  document.getElementById('kb-stop-btn').disabled = true;
+  document.getElementById('kb-status-text').textContent = t('kbStatusStopped');
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('keyup', handleKeyUp);
+  if ('keyboard' in navigator && typeof navigator.keyboard.unlock === 'function') navigator.keyboard.unlock();
+  updateSummary();
+}
+function resetKeyboardTest() {
+  stopKeyboardTest();
+  for (const k in keyState) delete keyState[k];
+  for (const k in keyLastPressTime) delete keyLastPressTime[k];
+  currentlyPressedCodes.clear();
+  lastGlobalPressTime = null;
+  renderKeyboard();
+  document.getElementById('kb-status-text').textContent = t('kbStatusDefault');
+  document.getElementById('live-pressed-keys').textContent = '-';
+  document.getElementById('live-interval').textContent = '-';
+  updateSummary();
+}
+function updateLiveKeyInfo() {
+  const labels = Array.from(currentlyPressedCodes).map(c => codeLabelMap[c] || c);
+  document.getElementById('live-pressed-keys').textContent = labels.length ? labels.join(' , ') : '-';
+}
+function handleKeyDown(e) {
+  if (!isTestingKeyboard) return;
+  e.preventDefault();
+  const code = e.code;
+  const keyEl = document.getElementById(`key-${code}`);
+  const now = Date.now();
+  if (!e.repeat) {
+    currentlyPressedCodes.add(code);
+    updateLiveKeyInfo();
+    if (lastGlobalPressTime !== null) {
+      document.getElementById('live-interval').textContent = `${now - lastGlobalPressTime} ms`;
+    }
+    lastGlobalPressTime = now;
+  }
+  if (keyEl) {
+    keyEl.classList.add('active');
+    if (keyLastPressTime[code] && (now - keyLastPressTime[code] < 50) && !e.repeat) {
+      keyState[code] = (keyState[code] === 2) ? 3 : 2;
+    } else if (!keyState[code]) {
+      keyState[code] = 1;
+    }
+    keyEl.classList.remove('status-ok', 'status-warn', 'status-error');
+    if (keyState[code] === 1) keyEl.classList.add('status-ok');
+    else if (keyState[code] === 2) keyEl.classList.add('status-warn');
+    else if (keyState[code] === 3) keyEl.classList.add('status-error');
+    keyLastPressTime[code] = now;
+  }
+}
+function handleKeyUp(e) {
+  if (!isTestingKeyboard) return;
+  const keyEl = document.getElementById(`key-${e.code}`);
+  if (keyEl) keyEl.classList.remove('active');
+  currentlyPressedCodes.delete(e.code);
+  updateLiveKeyInfo();
+}
+
+/* ===== 3. マウス ===== */
+const mouseState = {};
+const mouseLastTime = {};
+
+function renderMouseButtons() {
+  const labels = I18N[UI_LANG].mouseLabels;
+  const gridKeys = ['wheelup','left','middle','right','dblclick','wheeldown'];
+  const sideKeys = ['back','forward'];
+  const area = document.getElementById('mouse-btn-area');
+  area.innerHTML = '';
+  gridKeys.forEach(key => {
+    const div = document.createElement('div');
+    div.className = 'mouse-btn';
+    div.id = `mouse-${key}`;
+    div.textContent = labels[key];
+    if (mouseState[key]) div.classList.add(`status-${mouseState[key]}`);
+    area.appendChild(div);
+  });
+  const sideArea = document.getElementById('mouse-side-area');
+  sideArea.innerHTML = '';
+  sideKeys.forEach(key => {
+    const div = document.createElement('div');
+    div.className = 'mouse-btn';
+    div.id = `mouse-${key}`;
+    div.textContent = labels[key];
+    if (mouseState[key]) div.classList.add(`status-${mouseState[key]}`);
+    sideArea.appendChild(div);
+  });
+}
+const wheelKeys = ['wheelup', 'wheeldown'];
+function markMouse(key) {
+  const el = document.getElementById(`mouse-${key}`);
+  if (!el) return;
+  const now = Date.now();
+  if (wheelKeys.includes(key)) {
+    // ホイールは正常操作でも連続イベントが発生するため、反応検知のみ行いチャタリング判定は行わない
+    mouseState[key] = 'ok';
+  } else if (mouseLastTime[key] && (now - mouseLastTime[key] < 80)) {
+    mouseState[key] = (mouseState[key] === 'warn') ? 'error' : 'warn';
+  } else if (!mouseState[key]) {
+    mouseState[key] = 'ok';
+  }
+  el.classList.remove('status-ok','status-warn','status-error');
+  el.classList.add(`status-${mouseState[key]}`);
+  mouseLastTime[key] = now;
+  const hasIssue = Object.values(mouseState).includes('warn') || Object.values(mouseState).includes('error');
+  document.getElementById('mouse-status-text').textContent = hasIssue
+    ? t('mouseStatusChattering') : t('mouseStatusChecking');
+  updateSummary();
+}
+function resetMouseTest() {
+  for (const k in mouseState) delete mouseState[k];
+  for (const k in mouseLastTime) delete mouseLastTime[k];
+  renderMouseButtons();
+  document.getElementById('mouse-move-area').classList.remove('status-ok');
+  document.getElementById('mouse-move-area').textContent = t('mouseMoveDefault');
+  document.getElementById('mouse-status-text').textContent = t('mouseStatusDefault');
+  updateSummary();
+}
+function initMouseEvents() {
+  renderMouseButtons();
+  document.addEventListener('mousedown', (e) => {
+    if (e.button === 0) markMouse('left');
+    else if (e.button === 1) markMouse('middle');
+    else if (e.button === 2) markMouse('right');
+    else if (e.button === 3) markMouse('back');
+    else if (e.button === 4) markMouse('forward');
+  });
+  document.addEventListener('contextmenu', (e) => { e.preventDefault(); });
+  document.addEventListener('dblclick', () => markMouse('dblclick'));
+  document.addEventListener('wheel', (e) => { markMouse(e.deltaY < 0 ? 'wheelup' : 'wheeldown'); });
+  const moveArea = document.getElementById('mouse-move-area');
+  moveArea.addEventListener('mousemove', () => {
+    moveArea.classList.add('status-ok');
+    moveArea.textContent = t('mouseMoveDetected');
+    updateSummary();
+  });
+}
+
+/* ===== 4. モニター ===== */
+const monitorBgs = [
+  '#ffffff', '#000000', '#ff0000',
+  '#00ff00', '#0000ff', '#808080',
+  'linear-gradient(90deg,#000,#fff)',
+  'repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0/20px 20px',
+  'repeating-linear-gradient(90deg,#000,#000 10px,#fff 10px,#fff 20px)'
+];
+let monitorChecked = false;
+let monitorAutoInterval = null;
+function renderMonitorSwatches() {
+  const labels = I18N[UI_LANG].monitorLabels;
+  const area = document.getElementById('monitor-swatches');
+  area.innerHTML = '';
+  monitorBgs.forEach((bg, i) => {
+    const div = document.createElement('div');
+    div.className = 'swatch';
+    const colorBox = document.createElement('div');
+    colorBox.className = 'swatch-color';
+    colorBox.style.background = bg;
+    const labelEl = document.createElement('div');
+    labelEl.className = 'swatch-label';
+    labelEl.textContent = labels[i];
+    div.appendChild(colorBox);
+    div.appendChild(labelEl);
+    div.onclick = () => showMonitorFullscreen(bg);
+    area.appendChild(div);
+  });
+  // サイクルタイル：縞模様の右／青の下（5列グリッドの2行目5列目）に配置
+  const cycleDiv = document.createElement('div');
+  cycleDiv.className = 'swatch';
+  const cycleColorBox = document.createElement('div');
+  cycleColorBox.className = 'swatch-color';
+  cycleColorBox.style.background = 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)';
+  const cycleLabelEl = document.createElement('div');
+  cycleLabelEl.className = 'swatch-label';
+  cycleLabelEl.textContent = I18N[UI_LANG].monitorCycleLabel;
+  cycleDiv.appendChild(cycleColorBox);
+  cycleDiv.appendChild(cycleLabelEl);
+  cycleDiv.onclick = () => startMonitorAutoCycle();
+  area.appendChild(cycleDiv);
+}
+function requestRealFullscreen(el) {
+  try {
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if (req) req.call(el).catch(() => {});
+  } catch (e) {
+    // フルスクリーンAPI非対応・拒否時はCSSオーバーレイのみで継続
+  }
+}
+function exitRealFullscreen() {
+  const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+  if (isFullscreen && exit) exit.call(document).catch(() => {});
+}
+function showMonitorFullscreen(bg) {
+  const fs = document.getElementById('monitor-fullscreen');
+  fs.style.background = bg;
+  fs.style.display = 'flex';
+  monitorChecked = true;
+  updateSummary();
+  requestRealFullscreen(fs);
+}
+function startMonitorAutoCycle() {
+  const fs = document.getElementById('monitor-fullscreen');
+  let idx = 0;
+  fs.style.background = monitorBgs[idx];
+  fs.style.display = 'flex';
+  monitorChecked = true;
+  updateSummary();
+  requestRealFullscreen(fs);
+  monitorAutoInterval = setInterval(() => {
+    idx = (idx + 1) % monitorBgs.length;
+    fs.style.background = monitorBgs[idx];
+  }, 1000);
+}
+function exitMonitorFullscreen() {
+  document.getElementById('monitor-fullscreen').style.display = 'none';
+  if (monitorAutoInterval) {
+    clearInterval(monitorAutoInterval);
+    monitorAutoInterval = null;
+  }
+  exitRealFullscreen();
+}
+// Escキーや他の操作でブラウザ側からフルスクリーンが解除された場合も表示を同期して閉じる
+['fullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'].forEach(evt => {
+  document.addEventListener(evt, () => {
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+    if (!isFullscreen) {
+      document.getElementById('monitor-fullscreen').style.display = 'none';
+      if (monitorAutoInterval) {
+        clearInterval(monitorAutoInterval);
+        monitorAutoInterval = null;
+      }
+    }
+  });
+});
+
+/* ===== ネットワークチェック ===== */
+let networkChecked = false;
+async function runNetworkCheck() {
+  const btn = document.getElementById('net-start-btn');
+  btn.disabled = true;
+  document.getElementById('net-status-text').textContent = t('netStatusChecking');
+  document.getElementById('net-avg').textContent = '-';
+  document.getElementById('net-minmax').textContent = '-';
+  const times = [];
+  const attempts = 5;
+  for (let i = 0; i < attempts; i++) {
+    const start = performance.now();
+    try {
+      await fetch(`https://8.8.8.8/resolve?name=example.com&type=A&_=${Date.now()}_${i}`, { cache: 'no-store', mode: 'cors' });
+      times.push(performance.now() - start);
+    } catch (e) {
+      // 1回の失敗は無視して続行（ネットワーク環境やCORS制限による失敗を許容）
+    }
+  }
+  btn.disabled = false;
+  if (times.length === 0) {
+    document.getElementById('net-status-text').textContent = t('netStatusFailed');
+    networkChecked = false;
+  } else {
+    const avg = times.reduce((a, b) => a + b, 0) / times.length;
+    const min = Math.min(...times);
+    const max = Math.max(...times);
+    document.getElementById('net-avg').textContent = t('netAvgResult', {avg: avg.toFixed(0), count: times.length, attempts});
+    document.getElementById('net-minmax').textContent = t('netMinMaxResult', {min: min.toFixed(0), max: max.toFixed(0)});
+    document.getElementById('net-status-text').textContent = t('netStatusDone');
+    networkChecked = true;
+  }
+  updateSummary();
+}
+
+/* ===== 6. ゲームコントローラー ===== */
+let gamepadConnected = false;
+let gamepadAnyInput = false;
+let gamepadIndex = null;
+let gamepadLastId = null;
+let isGamepadTesting = false;
+let gamepadApiBlocked = false;
+
+function makeGpBtn(i) {
+  const div = document.createElement('div');
+  div.className = 'gp-btn';
+  div.id = `gp-btn-${i}`;
+  div.textContent = I18N[UI_LANG].gpButtonLabels[i];
+  return div;
+}
+
+function renderGamepadButtons() {
+  const shoulderRow = document.getElementById('gp-shoulder-row');
+  const shoulderPressed = [4, 5].map(i => document.getElementById(`gp-btn-${i}`)?.classList.contains('pressed'));
+  shoulderRow.innerHTML = '';
+  [4, 5].forEach((i, idx) => { const b = makeGpBtn(i); if (shoulderPressed[idx]) b.classList.add('pressed'); shoulderRow.appendChild(b); });
+
+  const triggerRow = document.getElementById('gp-trigger-row');
+  triggerRow.innerHTML = '';
+  [6, 7].forEach(i => triggerRow.appendChild(makeGpBtn(i)));
+
+  const dpad = document.getElementById('gp-dpad');
+  dpad.innerHTML = '';
+  const dpadPositions = { 12: [1, 2], 14: [2, 1], 15: [2, 3], 13: [3, 2] };
+  Object.entries(dpadPositions).forEach(([i, [row, col]]) => {
+    const btn = makeGpBtn(Number(i));
+    btn.style.gridRow = row;
+    btn.style.gridColumn = col;
+    dpad.appendChild(btn);
+  });
+
+  const centerButtons = document.getElementById('gp-center-buttons');
+  centerButtons.innerHTML = '';
+  [8, 9].forEach(i => centerButtons.appendChild(makeGpBtn(i)));
+
+  const faceButtons = document.getElementById('gp-face-buttons');
+  faceButtons.innerHTML = '';
+  [0, 1, 2, 3].forEach(i => faceButtons.appendChild(makeGpBtn(i)));
+
+  const bottomRow = document.getElementById('gp-bottom-row');
+  bottomRow.innerHTML = '';
+  [10, 16, 11].forEach(i => bottomRow.appendChild(makeGpBtn(i)));
+
+  const axesArea = document.getElementById('gamepad-axes');
+  axesArea.innerHTML = '';
+  I18N[UI_LANG].gpAxisLabels.forEach((label, i) => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="gp-axis-label">${label}</div>
+      <div class="gp-axis-bar-bg"><div class="gp-axis-bar-fill" id="gp-axis-${i}" style="left:50%;width:0%;"></div></div>`;
+    axesArea.appendChild(wrap);
+  });
+}
+
+function startGamepadTest() {
+  isGamepadTesting = true;
+  document.getElementById('gp-start-btn').disabled = true;
+  document.getElementById('gp-stop-btn').disabled = false;
+  if (!gamepadConnected) {
+    document.getElementById('gamepad-status').textContent = t('gpStatusIdleWaiting');
+  }
+  requestAnimationFrame(pollGamepad);
+}
+function stopGamepadTest() {
+  isGamepadTesting = false;
+  document.getElementById('gp-start-btn').disabled = false;
+  document.getElementById('gp-stop-btn').disabled = true;
+  document.getElementById('gamepad-status').textContent = gamepadConnected
+    ? t('gpStatusStopped') : t('gpStatusIdle');
+}
+
+window.addEventListener('gamepadconnected', (e) => {
+  gamepadConnected = true;
+  gamepadIndex = e.gamepad.index;
+  gamepadLastId = e.gamepad.id;
+  if (isGamepadTesting) {
+    document.getElementById('gamepad-status').textContent = t('gpStatusConnected', {id: e.gamepad.id});
+  }
+  updateSummary();
+});
+window.addEventListener('gamepaddisconnected', () => {
+  gamepadConnected = false;
+  gamepadIndex = null;
+  document.getElementById('gamepad-status').textContent = t('gpStatusIdle');
+  updateSummary();
+});
+
+function pollGamepad() {
+  if (!isGamepadTesting || gamepadApiBlocked) return;
+  let pads = [];
+  try {
+    pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  } catch (e) {
+    gamepadApiBlocked = true;
+    document.getElementById('gamepad-status').textContent = t('gpStatusBlocked');
+    return;
+  }
+  const pad = gamepadIndex !== null ? pads[gamepadIndex] : Array.from(pads).find(p => p);
+  if (pad) {
+    if (!gamepadConnected) {
+      gamepadConnected = true;
+      gamepadIndex = pad.index;
+      gamepadLastId = pad.id;
+    }
+    document.getElementById('gamepad-status').textContent = t('gpStatusConnected', {id: pad.id});
+    pad.buttons.forEach((btn, i) => {
+      const el = document.getElementById(`gp-btn-${i}`);
+      if (!el) return;
+      const pressed = btn.pressed || btn.value > 0.2;
+      el.classList.toggle('pressed', pressed);
+      if (pressed) gamepadAnyInput = true;
+    });
+    pad.axes.forEach((val, i) => {
+      const el = document.getElementById(`gp-axis-${i}`);
+      if (!el) return;
+      const pct = Math.abs(val) * 50;
+      el.style.width = `${pct}%`;
+      el.style.left = val < 0 ? `${50 - pct}%` : '50%';
+      if (Math.abs(val) > 0.15) gamepadAnyInput = true;
+    });
+    updateSummary();
+  } else {
+    document.getElementById('gamepad-status').textContent = t('gpStatusIdleWaiting');
+  }
+  requestAnimationFrame(pollGamepad);
+}
+
+/* ===== 7. 総合結果 ===== */
+function badge(status, text) {
+  return `<span class="status-badge ${status}">${text}</span>`;
+}
+function updateSummary() {
+  // キーボード
+  const expectedCodes = getExpectedKeyCodes();
+  const pressedCodes = Object.keys(keyState).filter(c => expectedCodes.includes(c));
+  const kbStates = pressedCodes.map(c => keyState[c]);
+  if (pressedCodes.length === 0) {
+    document.getElementById('sum-keyboard').innerHTML = badge('pending', t('badgePending'));
+  } else if (kbStates.includes(3)) {
+    document.getElementById('sum-keyboard').innerHTML = badge('error', t('badgeErrorChatter'));
+  } else if (kbStates.includes(2)) {
+    document.getElementById('sum-keyboard').innerHTML = badge('warn', t('badgeWarnChatterPartial'));
+  } else if (pressedCodes.length < expectedCodes.length) {
+    document.getElementById('sum-keyboard').innerHTML = badge('warn', t('badgeWarnMissing', {count: pressedCodes.length, total: expectedCodes.length}));
+  } else {
+    document.getElementById('sum-keyboard').innerHTML = badge('ok', t('badgeOkAllKeys'));
+  }
+
+  // マウス
+  const mStates = Object.values(mouseState);
+  document.getElementById('sum-mouse').innerHTML = mStates.length === 0
+    ? badge('pending', t('badgePending')) : mStates.includes('error')
+    ? badge('error', t('badgeErrorChatter')) : mStates.includes('warn')
+    ? badge('warn', t('badgeWarnChatterPartial')) : badge('ok', t('badgeOk'));
+
+  // モニター
+  document.getElementById('sum-monitor').innerHTML = monitorChecked ? badge('ok', t('badgeOkChecked')) : badge('pending', t('badgePending'));
+
+  // ネットワーク
+  document.getElementById('sum-network').innerHTML = networkChecked ? badge('ok', t('badgeOkChecked')) : badge('pending', t('badgePending'));
+
+  // ゲームコントローラー
+  document.getElementById('sum-gamepad').innerHTML = gamepadAnyInput
+    ? badge('ok', t('badgeOkChecked')) : gamepadConnected
+    ? badge('warn', t('badgeWarnConnectedNoInput')) : badge('pending', t('badgePending'));
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  applyStaticI18n();
+  document.getElementById('kb-status-text').textContent = t('kbStatusDefault');
+  document.getElementById('mouse-status-text').textContent = t('mouseStatusDefault');
+  document.getElementById('mouse-move-area').textContent = t('mouseMoveDefault');
+  document.getElementById('net-status-text').textContent = t('netStatusDefault');
+  document.getElementById('gamepad-status').textContent = t('gpStatusIdle');
+  initSystemInfo();
+  renderKeyboard();
+  initMouseEvents();
+  renderMonitorSwatches();
+  renderGamepadButtons();
+  updateSummary();
+});
+</script>
+
+</body>
+</html>
