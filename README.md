@@ -56,6 +56,7 @@ Some advanced diagnostic features may require browser support and explicit user 
 This site provides basic functionality checks using information available through the web browser.
 It does not provide a complete hardware diagnosis or guarantee that a device is free from faults.
 
+
 ## 開発状況 / Development Status
 
 現在開発中です。
