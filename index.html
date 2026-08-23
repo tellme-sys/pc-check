@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -110,6 +109,39 @@
   .chrome-feature-badge {
     background-color: #e8f0fe; border: 1px solid #a8c7fa; color: #1a56b0;
     font-size: 0.8rem; padding: 8px 10px; border-radius: 4px; margin-bottom: 10px;
+  }
+
+  /* アフィリエイト導線（日本語版のみ表示） */
+  .affiliate-banner {
+    background-color: #fff0f0; border: 1px solid #ffcccc; border-radius: 6px;
+    padding: 10px 14px; margin: 14px 0; font-size: 0.85rem; text-align: center;
+  }
+  .affiliate-banner a { color: #cc0000; font-weight: bold; text-decoration: none; }
+  .affiliate-banner a:hover { text-decoration: underline; }
+  .affiliate-banner-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 6px; }
+  .affiliate-pill {
+    display: inline-block; background: #fff; border: 1px solid #ffb3b3; border-radius: 14px;
+    padding: 3px 12px; font-size: 0.8rem; color: #cc0000; font-weight: bold; text-decoration: none;
+  }
+  .affiliate-pill:hover { background: #ffe5e5; text-decoration: none; }
+  .affiliate-inline {
+    font-size: 0.82rem; color: #555; margin-top: 10px; padding-top: 8px;
+    border-top: 1px dashed #ddd; text-align: right;
+  }
+  .affiliate-inline a { color: #cc0000; font-weight: bold; text-decoration: none; }
+  .affiliate-inline a:hover { text-decoration: underline; }
+  .affiliate-footer-section {
+    background-color: #fafafa; border: 1px solid #eee; border-radius: 6px;
+    padding: 14px; margin: 14px 0; font-size: 0.85rem;
+  }
+  .affiliate-footer-section h3 { font-size: 0.9rem; margin: 0 0 8px 0; }
+  .affiliate-footer-section a { color: #0066cc; font-weight: bold; text-decoration: none; }
+  .affiliate-footer-section a:hover { text-decoration: underline; }
+  .affiliate-domain-note { font-size: 0.75rem; color: #999; text-align: center; margin-top: 10px; }
+  .affiliate-domain-note a { color: #999; }
+  .ad-label {
+    display: inline-block; background: #999; color: #fff; font-size: 0.65rem; font-weight: bold;
+    padding: 1px 6px; border-radius: 3px; margin-right: 6px; vertical-align: middle;
   }
 
   .keyboard-extra-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
@@ -225,6 +257,18 @@
     <p style="font-size: 0.7rem; color: #aaa; margin-top: 4px;">v1.0β</p>
   </header>
 
+  <div class="affiliate-banner ja-only" data-i18n-visibility="ja">
+    <span class="ad-label">広告</span>パーツ交換・買い替えをご検討なら（楽天市場）
+    <div class="affiliate-banner-links">
+      <a class="affiliate-pill" href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FM.2%252BSSD%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FM.2%252BSSD%252F" rel="nofollow noopener" target="_blank">M.2 SSD</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+      <a class="affiliate-pill" href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F2.5int%252BSSD%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F2.5int%252BSSD%252F" rel="nofollow noopener" target="_blank">2.5インチ SSD</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+      <a class="affiliate-pill" href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FHDD%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FHDD%252F" rel="nofollow noopener" target="_blank">HDD</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+      <a class="affiliate-pill" href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FPC%2525E3%252583%2525A1%2525E3%252583%2525A2%2525E3%252583%2525AA%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FPC%2525E3%252583%2525A1%2525E3%252583%2525A2%2525E3%252583%2525AA%252F" rel="nofollow noopener" target="_blank">メモリ</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+      <a class="affiliate-pill" href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FPC%2525E5%252591%2525A8%2525E8%2525BE%2525BA%2525E6%2525A9%25259F%2525E5%252599%2525A8%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FPC%2525E5%252591%2525A8%2525E8%2525BE%2525BA%2525E6%2525A9%25259F%2525E5%252599%2525A8%252F" rel="nofollow noopener" target="_blank">周辺機器</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+      <a class="affiliate-pill" href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252583%2525AB%2525E3%252583%2525BC%2525E3%252582%2525BF%2525E3%252583%2525BC%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252583%2525AB%2525E3%252583%2525BC%2525E3%252582%2525BF%2525E3%252583%2525BC%252F" rel="nofollow noopener" target="_blank">ルーター</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+    </div>
+  </div>
+
   <div class="ad-slot" id="AD_SLOT_TOP"></div>
 
   <!-- 1. PC基本情報 -->
@@ -295,6 +339,9 @@
       ・物理的に反応しないキーはブラウザに信号が届かないため自動検出できません。押した後に<strong>白いまま残っているキー</strong>が無反応キーとなります。<br>
       ・PrintScreen, Sleep, Fnキー等はOS側の設定によりWeb上で正しく検知できない場合があります。
     </div>
+    <div class="affiliate-inline ja-only">
+      <span class="ad-label">広告</span>キーボードの反応が悪い・買い替えたい方は → <a href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252582%2525AD%2525E3%252583%2525BC%2525E3%252583%25259C%2525E3%252583%2525BC%2525E3%252583%252589%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252582%2525AD%2525E3%252583%2525BC%2525E3%252583%25259C%2525E3%252583%2525BC%2525E3%252583%252589%252F" rel="nofollow noopener" target="_blank">楽天でキーボードを探す</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+    </div>
   </section>
 
   <!-- 3. マウスチェック -->
@@ -310,6 +357,9 @@
     <div class="notice" data-i18n-html="mouseNotice">
       <strong>注意事項:</strong> 一定時間内に異常な複数クリックを検出した場合「チャタリングの可能性」を表示します。単発での判定確定は避け、複数回試してください。
     </div>
+    <div class="affiliate-inline ja-only">
+      <span class="ad-label">広告</span>チャタリング・反応不良のマウスは → <a href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FPC%2525E3%252580%252580%2525E3%252583%25259E%2525E3%252582%2525A6%2525E3%252582%2525B9%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252FPC%2525E3%252580%252580%2525E3%252583%25259E%2525E3%252582%2525A6%2525E3%252582%2525B9%252F" rel="nofollow noopener" target="_blank">楽天でマウスを探す</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+    </div>
   </section>
 
   <div class="ad-slot" id="AD_SLOT_RESULT_2"></div>
@@ -319,6 +369,9 @@
     <h2 data-i18n="section4Title">4. モニターチェック</h2>
     <p style="font-size:0.85rem; color:#666;" data-i18n="monitorDesc">各色をクリックすると全画面表示します。ドット抜け・常時点灯・色むら・焼き付きがないか目視確認してください。「サイクル」は1秒ごとに全色を自動切替します。画面をクリックすると終了します。</p>
     <div class="monitor-swatches" id="monitor-swatches"></div>
+    <div class="affiliate-inline ja-only">
+      <span class="ad-label">広告</span>ドット抜け・焼き付きが見つかったら → <a href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252583%2525A2%2525E3%252583%25258B%2525E3%252582%2525BF%2525E3%252583%2525BC%252F%253Fl-id%253Dpc_header_search_suggest%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252583%2525A2%2525E3%252583%25258B%2525E3%252582%2525BF%2525E3%252583%2525BC%252F%253Fl-id%253Dpc_header_search_suggest" rel="nofollow noopener" target="_blank">楽天でモニターを探す</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+    </div>
   </section>
   <div id="monitor-fullscreen" onclick="exitMonitorFullscreen()"><span data-i18n="monitorExitLabel">クリックで終了</span></div>
 
@@ -335,6 +388,9 @@
     </table>
     <div class="notice" data-i18n="netNotice">
       Google Public DNS（8.8.8.8）宛にHTTPS通信を複数回行い、その往復時間から通信の応答性を概算するものです。ブラウザの制約上、OSの「Ping」コマンドと同じ値にはならず、実際の値より高めに出る場合があります。回線速度（Mbps）そのものの計測ではありません。
+    </div>
+    <div class="affiliate-inline ja-only">
+      <span class="ad-label">広告</span>応答が遅い・回線が不安定な場合は → <a href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252583%2525AB%2525E3%252583%2525BC%2525E3%252582%2525BF%2525E3%252583%2525BC%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252583%2525AB%2525E3%252583%2525BC%2525E3%252582%2525BF%2525E3%252583%2525BC%252F" rel="nofollow noopener" target="_blank">楽天でルーターを探す</a><img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
     </div>
   </section>
 
@@ -358,6 +414,9 @@
     <div class="notice" data-i18n="gpNotice">
       ボタン番号・十字キー・スティックの割り当ては機種により異なる場合があります。押しても反応しない場合は、一度いずれかのボタンを押してブラウザに認識させてから再度お試しください。
     </div>
+    <div class="affiliate-inline ja-only">
+      <span class="ad-label">広告</span>反応しない・買い替えたい場合は → <a href="https://rpx.a8.net/svt/ejp?a8mat=4BACLH+1B19KI+2HOM+BW8O1&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26082348407_4BACLH_1B19KI_2HOM_BW8O1%3Fpc%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252582%2525B2%2525E3%252583%2525BC%2525E3%252583%2525A0%2525E3%252583%252591%2525E3%252583%252583%2525E3%252583%252589%252F%26m%3Dhttps%253A%252F%252Fsearch.rakuten.co.jp%252Fsearch%252Fmall%252F%2525E3%252582%2525B2%2525E3%252583%2525BC%2525E3%252583%2525A0%2525E3%252583%252591%2525E3%252583%252583%2525E3%252583%252589%252F" rel="nofollow noopener" target="_blank">楽天でゲームパッドを探す</a><img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4BACLH+1B19KI+2HOM+BW8O1" alt="">
+    </div>
   </section>
 
   <!-- 7. 総合結果 -->
@@ -372,6 +431,25 @@
     </table>
   </section>
 
+  <div class="affiliate-footer-section ja-only">
+    <h3><span class="ad-label">広告</span>うまく直らなかった・手放したい場合</h3>
+    <p style="margin:0 0 8px 0;">診断結果が思わしくなかった、あるいは動作は問題ないけれど不要になったPCがあれば、以下のサービスもご検討ください。</p>
+    <p style="margin:4px 0;">修理不可・完全に壊れてしまった場合 → 【国認定】リネットジャパンで無料回収・処分</p>
+    <div style="text-align:center; margin: 8px 0 12px;">
+      <a href="https://px.a8.net/svt/ejp?a8mat=4BACLH+3257OY+1SOW+1HNDBL" rel="nofollow noopener" target="_blank">
+        <img border="0" width="468" height="60" alt="【国認定】パソコン無料回収・処分・廃棄【リネットジャパン】" src="https://www25.a8.net/svt/bgt?aid=260823365185&wid=001&eno=01&mid=s00000008384009011000&mc=1">
+      </a>
+      <img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BACLH+3257OY+1SOW+1HNDBL" alt="">
+    </div>
+    <p style="margin:4px 0;">動作するけど手放したい場合 → リコマースの宅配買取（Amazonアカウントで利用可）</p>
+    <div style="text-align:center; margin: 8px 0 4px;">
+      <a href="https://px.a8.net/svt/ejp?a8mat=4BACLH+2IHWQA+3XHM+601S1" rel="nofollow noopener" target="_blank">
+        <img border="0" width="468" height="60" alt="Amazonアカウントで利用できる【リコマース宅配買取サービス】" src="https://www21.a8.net/svt/bgt?aid=260823365152&wid=001&eno=01&mid=s00000018337001008000&mc=1">
+      </a>
+      <img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4BACLH+2IHWQA+3XHM+601S1" alt="">
+    </div>
+  </div>
+
   <!-- 免責事項 -->
   <section class="card">
     <h2 data-i18n="disclaimerTitle">免責事項</h2>
@@ -384,6 +462,10 @@
   </section>
 
   <div class="ad-slot" id="AD_SLOT_BOTTOM"></div>
+
+  <div class="affiliate-domain-note ja-only">
+    <span class="ad-label">広告</span>自分でもこういうサイトを作ってみたい方は → <a href="https://px.a8.net/svt/ejp?a8mat=4BACLH+1BMP6A+50+2HHVNM" rel="nofollow noopener" target="_blank">お名前.comで独自ドメインを取得</a><img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4BACLH+1BMP6A+50+2HHVNM" alt="">
+  </div>
 </div>
 
 <script>
@@ -574,6 +656,7 @@ function applyStaticI18n() {
     el.style.display = text === '' ? 'none' : '';
   });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
+  document.querySelectorAll('.ja-only').forEach(el => { el.style.display = (UI_LANG === 'ja') ? '' : 'none'; });
 }
 function setUiLang(lang) {
   UI_LANG = lang;
